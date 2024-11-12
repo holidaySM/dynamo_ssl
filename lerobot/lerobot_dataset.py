@@ -16,7 +16,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable, Optional, Dict, List
 
 import datasets
 import torch
@@ -47,7 +47,7 @@ class LeRobotDataset(torch.utils.data.Dataset):
             root: Optional[Path] = DATA_DIR,
             split: str = "train",
             image_transforms: Optional[Callable] = None,
-            delta_timestamps: Optional[dict[list[float]]] = None,
+            delta_timestamps: Optional[Dict[str, List[float]]] = None,
             video_backend: Optional[str] = None,
     ):
         super().__init__()
@@ -88,7 +88,7 @@ class LeRobotDataset(torch.utils.data.Dataset):
         return self.hf_dataset.features
 
     @property
-    def camera_keys(self) -> list[str]:
+    def camera_keys(self) -> List[str]:
         """Keys to access image and video stream from cameras."""
         keys = []
         for key, feats in self.hf_dataset.features.items():
@@ -97,7 +97,7 @@ class LeRobotDataset(torch.utils.data.Dataset):
         return keys
 
     @property
-    def video_frame_keys(self) -> list[str]:
+    def video_frame_keys(self) -> List[str]:
         """Keys to access video frames that requires to be decoded into images.
 
         Note: It is empty if the dataset contains images only,
@@ -182,7 +182,7 @@ class LeRobotDataset(torch.utils.data.Dataset):
             root: Optional[Path] = None,
             split: str = "train",
             transform: callable = None,
-            delta_timestamps: Optional[dict[list[float]]] = None,
+            delta_timestamps: Optional[Dict[str, List[float]]] = None,
             # additional preloaded attributes
             hf_dataset=None,
             episode_data_index=None,
@@ -224,11 +224,11 @@ class MultiLeRobotDataset(torch.utils.data.Dataset):
 
     def __init__(
             self,
-            repo_ids: list[str],
+            repo_ids: List[str],
             root: Optional[Path] = DATA_DIR,
             split: str = "train",
             image_transforms: Optional[Callable] = None,
-            delta_timestamps: Optional[dict[list[float]]] = None,
+            delta_timestamps: Optional[Dict[str, List[float]]] = None,
             video_backend: Optional[str] = None,
     ):
         super().__init__()
@@ -319,7 +319,7 @@ class MultiLeRobotDataset(torch.utils.data.Dataset):
         return features
 
     @property
-    def camera_keys(self) -> list[str]:
+    def camera_keys(self) -> List[str]:
         """Keys to access image and video stream from cameras."""
         keys = []
         for key, feats in self.features.items():
@@ -328,7 +328,7 @@ class MultiLeRobotDataset(torch.utils.data.Dataset):
         return keys
 
     @property
-    def video_frame_keys(self) -> list[str]:
+    def video_frame_keys(self) -> List[str]:
         """Keys to access video frames that requires to be decoded into images.
 
         Note: It is empty if the dataset contains images only,
@@ -363,7 +363,7 @@ class MultiLeRobotDataset(torch.utils.data.Dataset):
     def __len__(self):
         return self.num_samples
 
-    def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
+    def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
         if idx >= len(self):
             raise IndexError(f"Index {idx} out of bounds.")
         # Determine which dataset to get an item from based on the index.

@@ -19,7 +19,7 @@ import warnings
 from collections import OrderedDict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar, Optional, Dict, List
 
 import pyarrow as pa
 import torch
@@ -28,8 +28,8 @@ from datasets.features.features import register_feature
 
 
 def load_from_videos(
-        item: dict[str, torch.Tensor],
-        video_frame_keys: list[str],
+        item: Dict[str, torch.Tensor],
+        video_frame_keys: List[str],
         videos_dir: Path,
         tolerance_s: float,
         backend: str = "pyav",
@@ -66,7 +66,7 @@ def load_from_videos(
 
 def decode_video_frames_torchvision(
         video_path: str,
-        timestamps: list[float],
+        timestamps: List[float],
         tolerance_s: float,
         backend: str = "pyav",
         log_loaded_timestamps: bool = False,

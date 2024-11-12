@@ -20,6 +20,7 @@ import einops
 import torch
 import tqdm
 from datasets import Image
+from typing import Dict
 
 from lerobot.video_utils import VideoFrame
 
@@ -162,7 +163,7 @@ def compute_stats(dataset, batch_size=8, num_workers=8, max_num_samples=None):
     return stats
 
 
-def aggregate_stats(ls_datasets) -> dict[str, torch.Tensor]:
+def aggregate_stats(ls_datasets) -> Dict[str, torch.Tensor]:
     """Aggregate stats of multiple LeRobot datasets into one set of stats without recomputing from scratch.
 
     The final stats will have the union of all data keys from each of the datasets.

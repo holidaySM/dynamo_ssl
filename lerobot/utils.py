@@ -16,9 +16,9 @@
 import json
 import re
 import warnings
-from functools import cache
+from functools import lru_cache
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 import datasets
 import torch
@@ -69,7 +69,7 @@ def unflatten_dict(d, sep="/"):
     return outdict
 
 
-def hf_transform_to_torch(items_dict: dict[torch.Tensor | None]):
+def hf_transform_to_torch(items_dict: dict):
     """Get a transform function that convert items from Hugging Face dataset (pyarrow)
     to torch tensors. Importantly, images are converted from PIL, which corresponds to
     a channel last representation (h w c) of uint8 type, to a torch image representation
@@ -95,7 +95,7 @@ def hf_transform_to_torch(items_dict: dict[torch.Tensor | None]):
     return items_dict
 
 
-@cache
+@lru_cache
 def get_hf_dataset_safe_version(repo_id: str, version: str) -> str:
     api = HfApi()
     dataset_info = api.list_repo_refs(repo_id, repo_type="dataset")
@@ -144,7 +144,7 @@ def load_hf_dataset(repo_id: str, version: str, root: Path, split: str) -> datas
     return hf_dataset
 
 
-def load_episode_data_index(repo_id, version, root) -> dict[str, torch.Tensor]:
+def load_episode_data_index(repo_id, version, root) -> Dict[str, torch.Tensor]:
     """episode_data_index contains the range of indices for each episode
 
     Example:
@@ -165,7 +165,7 @@ def load_episode_data_index(repo_id, version, root) -> dict[str, torch.Tensor]:
     return load_file(path)
 
 
-def load_stats(repo_id, version, root) -> dict[str, dict[str, torch.Tensor]]:
+def load_stats(repo_id, version, root) -> Dict[str, Dict[str, torch.Tensor]]:
     """stats contains the statistics per modality computed over the full dataset, such as max, min, mean, std
 
     Example:
@@ -217,12 +217,12 @@ def load_videos(repo_id, version, root) -> Path:
 
 
 def load_previous_and_future_frames(
-        item: dict[str, torch.Tensor],
+        item: Dict[str, torch.Tensor],
         hf_dataset: datasets.Dataset,
-        episode_data_index: dict[str, torch.Tensor],
-        delta_timestamps: dict[str, list[float]],
+        episode_data_index: Dict[str, torch.Tensor],
+        delta_timestamps: Dict[str, List[float]],
         tolerance_s: float,
-) -> dict[torch.Tensor]:
+) -> Dict[str, torch.Tensor]:
     """
     Given a current item in the dataset containing a timestamp (e.g. 0.6 seconds), and a list of time differences of
     some modalities (e.g. delta_timestamps={"observation.image": [-0.8, -0.2, 0, 0.2]}), this function computes for each
