@@ -5,7 +5,7 @@ workspace:
   _target_: workspaces.sim_kitchen.SimKitchenWorkspace
 
 dataset:
-  _target_: datasets.sim_kitchen.SimKitchenTrajectoryDataset
+  _target_: custom_datasets.sim_kitchen.SimKitchenTrajectoryDataset
   data_directory: ${env_vars.datasets.sim_kitchen}
   onehot_goals: False
   prefetch: True

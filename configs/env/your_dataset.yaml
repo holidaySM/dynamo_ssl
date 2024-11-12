@@ -4,5 +4,5 @@ workspace:
   _target_: workspaces.your_workspace.YourWorkspace
 
 dataset:
-  _target_: datasets.your_dataset.YourTrajectoryDataset
+  _target_: custom_datasets.your_dataset.YourTrajectoryDataset
   data_directory: ${env_vars.datasets.your_trajectory_dataset}

@@ -5,7 +5,7 @@ workspace:
   _target_: workspaces.block_push_multiview.BlockPushMultiviewWorkspace
 
 dataset:
-  _target_: datasets.block_pushing.PushMultiviewTrajectoryDataset
+  _target_: custom_datasets.block_pushing.PushMultiviewTrajectoryDataset
   data_directory: ${env_vars.datasets.block_push}
   onehot_goals: False
   subset_fraction: ${subset_fraction}

@@ -38,7 +38,7 @@ env:
 
 
 dataset:
-  _target_: datasets.libero.LiberoGoalDataset
+  _target_: custom_datasets.libero.LiberoGoalDataset
   data_directory: ${env_vars.datasets.libero}
 
 data:

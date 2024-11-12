@@ -4,7 +4,7 @@ import utils
 import hydra
 import torch
 import einops
-import datasets
+import custom_datasets
 import numpy as np
 import torch.distributed
 from pathlib import Path
@@ -144,7 +144,7 @@ class Trainer:
             "future_seq_len": self.cfg.goal_seq_len,
             "num_extra_predicted_actions": self.cfg.num_extra_predicted_actions,
         }
-        return datasets.core.get_train_val_sliced(dataset, **kwargs)
+        return custom_datasets.core.get_train_val_sliced(dataset, **kwargs)
 
     def _setup_loaders(self, batch_size=None, pin_memory=True, num_workers=None):
         if num_workers is None:

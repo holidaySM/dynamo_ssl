@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 from typing import Optional
 from torch.nn.utils.rnn import pad_sequence
-from datasets.core import TrajectoryDataset
+from custom_datasets.core import TrajectoryDataset
 
 
 class LiberoGoalDataset(TrajectoryDataset):

@@ -39,7 +39,7 @@ env:
   views: 2
 
 dataset:
-  _target_: datasets.block_pushing.PushMultiviewTrajectoryDataset
+  _target_: custom_datasets.block_pushing.PushMultiviewTrajectoryDataset
   data_directory: ${env_vars.datasets.block_push}
 
 data:

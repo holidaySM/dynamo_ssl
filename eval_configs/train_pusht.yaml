@@ -41,7 +41,7 @@ env:
   views: 1
 
 dataset:
-  _target_: datasets.pusht.PushTDataset
+  _target_: custom_datasets.pusht.PushTDataset
   data_directory: ${env_vars.datasets.pusht}
 
 data:

@@ -3,7 +3,7 @@ import einops
 import pickle
 from pathlib import Path
 from typing import Optional
-from datasets.core import TrajectoryDataset
+from custom_datasets.core import TrajectoryDataset
 
 
 class PushTDataset(TrajectoryDataset):

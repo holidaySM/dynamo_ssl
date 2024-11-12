@@ -5,5 +5,5 @@ workspace:
   _target_: workspaces.libero_goal.LiberoGoalWorkspace
 
 dataset:
-  _target_: datasets.libero.LiberoGoalDataset
+  _target_: custom_datasets.libero.LiberoGoalDataset
   data_directory: ${env_vars.datasets.libero}

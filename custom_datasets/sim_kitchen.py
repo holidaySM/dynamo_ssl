@@ -2,7 +2,7 @@ import utils
 import torch
 import numpy as np
 from pathlib import Path
-from datasets.core import TrajectoryDataset
+from custom_datasets.core import TrajectoryDataset
 
 
 class SimKitchenTrajectoryDataset(TrajectoryDataset):

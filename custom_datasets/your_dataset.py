@@ -3,7 +3,7 @@ import torch
 import numpy as np
 from pathlib import Path
 from torch.utils.data import TensorDataset
-from datasets.core import TrajectoryDataset
+from custom_datasets.core import TrajectoryDataset
 
 
 class YourTrajectoryDataset(TensorDataset, TrajectoryDataset):

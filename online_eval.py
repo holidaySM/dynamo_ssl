@@ -13,8 +13,8 @@ from omegaconf import OmegaConf
 import wandb
 from utils.video import VideoRecorder
 import pickle
-from datasets.core import TrajectoryEmbeddingDataset, split_traj_datasets
-from datasets.vqbet_repro import TrajectorySlicerDataset
+from custom_datasets.core import TrajectoryEmbeddingDataset, split_traj_datasets
+from custom_datasets.vqbet_repro import TrajectorySlicerDataset
 
 
 if "MUJOCO_GL" not in os.environ:

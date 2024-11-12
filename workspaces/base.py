@@ -1,5 +1,5 @@
 from accelerate import Accelerator
-from datasets.core import TrajectoryDataset
+from custom_datasets.core import TrajectoryDataset
 
 
 class Workspace:
