@@ -1,9 +1,16 @@
 from pathlib import Path
 
 import torch
+import torch.nn.functional as F
 
 from custom_datasets.core import TrajectoryDataset
 from lerobot.rollout_datasets.episode_stores import EpisodeVideoStore
+
+
+def _resize_image_tensor(obs):
+    assert len(obs.size()) == 4  # T, C, H, W
+    obs = F.interpolate(obs, size=[224, 224], mode='bilinear')
+    return obs.unsqueeze(1)
 
 
 class RolloutPushAnyDataset(TrajectoryDataset):
@@ -22,8 +29,8 @@ class RolloutPushAnyDataset(TrajectoryDataset):
         from_idx, to_idx = self._get_episode_from_to(episode_idx)
         episode_sequence = self._lerobot_dataset[from_idx:to_idx]
 
-        obs = episode_sequence['observation.image'][frames]
-        act = episode_sequence['action'][frames]
+        obs = _resize_image_tensor(episode_sequence['observation.image'][frames])
+        act = torch.stack(episode_sequence['action'], dim=0)[frames]
         mask = torch.ones(len(act)).bool()
         return obs, act, mask
 
