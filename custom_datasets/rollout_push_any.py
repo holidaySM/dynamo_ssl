@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import torch
 import torch.nn.functional as F
@@ -14,12 +15,18 @@ def _resize_image_tensor(obs):
 
 
 class RolloutPushAnyDataset(TrajectoryDataset):
-    def __init__(self, data_path):
+    def __init__(self, data_directory, subset_fraction: Optional[float] = None, relative=False):
         super().__init__()
-        data_directory = Path(data_path)
+        data_directory = Path(data_directory)
 
         episode_store = EpisodeVideoStore.create_from_path(data_directory, mode='r')
         self._lerobot_dataset = episode_store.convert_to_lerobot_dataset()
+
+        self.relative = relative
+
+        self.subset_fraction = subset_fraction if subset_fraction else 1.0
+        self._num_episodes = int(self._lerobot_dataset.num_episodes * subset_fraction) if subset_fraction \
+            else self._lerobot_dataset.num_episodes
 
     def get_seq_length(self, episode_idx):
         from_idx, to_idx = self._get_episode_from_to(episode_idx)
@@ -38,7 +45,7 @@ class RolloutPushAnyDataset(TrajectoryDataset):
         return self.get_frames(episode_idx, range(self.get_seq_length(episode_idx)))
 
     def __len__(self):
-        return self._lerobot_dataset.num_episodes
+        return self._num_episodes
 
     def _get_episode_from_to(self, episode_idx):
         from_idx = self._lerobot_dataset.episode_data_index["from"][episode_idx].item()
