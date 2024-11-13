@@ -17,6 +17,17 @@ def zarr_data_generator(zarr_dict: Dict[str, zarr.core.Array]):
         yield record
 
 
+def zarr_data_to_data_dict(zarr_dict: Dict[str, zarr.core.Array]):
+    data_size = _check_sanity_and_get_data_size(zarr_dict)
+    data_dict = {}
+    for k, zarr_v in zarr_dict.items():
+        np_array = zarr_v[:]
+        np_array = torch.from_numpy(np_array) if not np_array.dtype == 'object' else np_array
+        data_dict[k] = np_array
+    data_dict['index'] = torch.from_numpy(np.arange(data_size))
+    return data_dict
+
+
 def _check_sanity_and_get_data_size(zarr_dict: Dict[str, zarr.core.Array]):
     array_lengths = [v.shape[0] for v in zarr_dict.values()]
     for p, n in zip(array_lengths, array_lengths[1:]):
@@ -42,9 +53,9 @@ def to_hf_dataset(zarr_dict: Dict[str, zarr.core.Array]):
     features["next.success"] = Value(dtype="bool", id=None)
     features["index"] = Value(dtype="int64", id=None)
 
-    hf_dataset = Dataset.from_generator(zarr_data_generator,
-                                        gen_kwargs={'zarr_dict': zarr_dict},
-                                        features=Features(features))
+    # TODO: Need to adjust for very large datasets
+    data_dict = zarr_data_to_data_dict(zarr_dict)
+    hf_dataset = Dataset.from_dict(data_dict, features=Features(features))
     hf_dataset.set_transform(hf_transform_to_torch)
     return hf_dataset
 

@@ -55,7 +55,7 @@ class EpisodeVideoStore(object):
         self.root_group.attrs['num_episodes'] += 1
         print(f"Successfully added episode: {self.root_group.attrs['num_episodes']}")
 
-    def convert_to_lerobot_dataset(self, repo_id, **kwargs):
+    def convert_to_lerobot_dataset(self, repo_id='place/holder', **kwargs):
         zarr_dict = read_data_from_zarr(self.data_group)
         hf_dataset = to_hf_dataset(zarr_dict)
         episode_data_index = calculate_episode_data_index(hf_dataset)
