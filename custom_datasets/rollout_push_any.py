@@ -29,7 +29,7 @@ class RolloutPushAnyDataset(TrajectoryDataset):
         from_idx, to_idx = self._get_episode_from_to(episode_idx)
         episode_sequence = self._lerobot_dataset[from_idx:to_idx]
 
-        obs = episode_sequence['observation.image'][frames]
+        obs = episode_sequence['observation.image'][frames].unsqueeze(1)
         act = torch.stack(episode_sequence['action'], dim=0)[frames]
         mask = torch.ones(len(act)).bool()
         return obs, act, mask
