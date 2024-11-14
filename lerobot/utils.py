@@ -85,7 +85,7 @@ def hf_transform_to_torch(items_dict: dict):
             # For now we leave this part up to the user to choose how to address
             # language conditioned tasks
             pass
-        elif isinstance(first_item, dict) and "path" in first_item and "timestamp" in first_item:
+        elif isinstance(first_item, dict) and "timestamp" in first_item:
             # video frame will be processed downstream
             pass
         elif first_item is None:
@@ -298,7 +298,7 @@ def load_previous_and_future_frames(
         # load frames modality
         item[key] = hf_dataset.select_columns(key)[data_ids][key]
 
-        if isinstance(item[key][0], dict) and "path" in item[key][0]:
+        if isinstance(item[key][0], dict):
             # video mode where frame are expressed as dict of path and timestamp
             item[key] = item[key]
         else:

@@ -6,7 +6,7 @@ import torch
 import zarr
 
 from lerobot.lerobot_dataset import LeRobotDataset
-from lerobot.rollout_datasets.zarr_utils import to_hf_dataset, read_data_from_zarr
+from lerobot.rollout_datasets.zarr_utils import to_hf_dataset, read_data_from_zarr, to_hf_dataset2
 from lerobot.utils import calculate_episode_data_index
 
 
