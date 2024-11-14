@@ -21,7 +21,7 @@ import torch.utils
 import zarr
 
 from lerobot.image_utils import load_from_frame_zarr, VideoFrameValue
-from lerobot.rollout_datasets.zarr_utils import to_hf_dataset2
+from lerobot.rollout_datasets.zarr_utils import to_hf_dataset
 from lerobot.utils import (
     calculate_episode_data_index,
     load_previous_and_future_frames,
@@ -43,7 +43,7 @@ class EpisodeDataset(torch.utils.data.Dataset):
         self.root_group = zarr.open(root_path, mode='r')
         self.frame_group = self.root_group['frames']
 
-        self.hf_dataset = to_hf_dataset2(self.root_group)
+        self.hf_dataset = to_hf_dataset(self.root_group)
         self.episode_data_index = calculate_episode_data_index(self.hf_dataset)
 
         self.split = split
