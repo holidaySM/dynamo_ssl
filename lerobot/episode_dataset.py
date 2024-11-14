@@ -20,13 +20,12 @@ import numpy as np
 import torch.utils
 import zarr
 
-from lerobot.image_utils import VideoFrameValue, load_from_frame_zarr
+from lerobot.image_utils import load_from_frame_zarr, VideoFrameValue
 from lerobot.rollout_datasets.zarr_utils import to_hf_dataset2
 from lerobot.utils import (
     calculate_episode_data_index,
     load_previous_and_future_frames,
 )
-from lerobot.video_utils import VideoFrame
 
 CODEBASE_VERSION = "v1.6"
 
@@ -68,12 +67,11 @@ class EpisodeDataset(torch.utils.data.Dataset):
     @property
     def camera_keys(self) -> List[str]:
         """Keys to access image and video stream from cameras."""
-        # keys = []
-        # for key, feats in self.hf_dataset.features.items():
-        #     if isinstance(feats, (datasets.Image, VideoFrame, VideoFrameValue)):
-        #         keys.append(key)
-        # return keys
-        return ['observation.image']
+        keys = []
+        for key, feats in self.hf_dataset.features.items():
+            if isinstance(feats, (datasets.Image, VideoFrameValue)):
+                keys.append(key)
+        return keys
 
     @property
     def video_frame_keys(self) -> List[str]:
@@ -83,12 +81,11 @@ class EpisodeDataset(torch.utils.data.Dataset):
         or equal to `self.cameras` if the dataset contains videos only,
         or can even be a subset of `self.cameras` in a case of a mixed image/video dataset.
         """
-        # video_frame_keys = []
-        # for key, feats in self.hf_dataset.features.items():
-        #     if isinstance(feats, (VideoFrame, VideoFrameValue)):
-        #         video_frame_keys.append(key)
-        # return video_frame_keys
-        return ['observation.image']
+        video_frame_keys = []
+        for key, feats in self.hf_dataset.features.items():
+            if isinstance(feats, VideoFrameValue):
+                video_frame_keys.append(key)
+        return video_frame_keys
 
     @property
     def num_samples(self) -> int:
