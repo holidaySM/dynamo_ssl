@@ -209,6 +209,7 @@ class Trainer:
             self.projector_optim.zero_grad(set_to_none=True)
 
     def eval(self):
+        print("Start Evaluation")
         if self.cfg.eval_offline:
             # env-specific offline eval
             self.workspace.set_models(
@@ -289,8 +290,8 @@ class Trainer:
         self.log_components = OrderedDict()
         for epoch in self.train_iterator:
             self.epoch = epoch
-            self.train()
             self.eval()
+            self.train()
             self.flush_log(step=self.epoch, iterator=self.train_iterator)
             if (self.epoch + 1) % self.cfg.save_every_epochs == 0:
                 self.save_snapshot()
