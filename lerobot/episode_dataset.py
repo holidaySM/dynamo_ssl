@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from pathlib import Path
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ import numpy as np
 import torch.utils
 import zarr
 
-from lerobot.image_utils import load_from_frame_zarr, VideoFrameValue
+from lerobot.image_utils import load_from_frame_zarr, VideoFrameValue, load_from_frame_torch
 from lerobot.rollout_datasets.zarr_utils import to_hf_dataset
 from lerobot.utils import (
     calculate_episode_data_index,
@@ -40,8 +40,10 @@ class EpisodeDataset(torch.utils.data.Dataset):
             info: Optional[dict] = None,
     ):
         super().__init__()
+        self.root_path = Path(root_path)
+        self.frame_path = self.root_path / "frames"
+
         self.root_group = zarr.open(root_path, mode='r')
-        self.frame_group = self.root_group['frames']
 
         self.hf_dataset = to_hf_dataset(self.root_group)
         self.episode_data_index = calculate_episode_data_index(self.hf_dataset)
@@ -121,7 +123,7 @@ class EpisodeDataset(torch.utils.data.Dataset):
                 self.tolerance_s,
             )
 
-        item = load_from_frame_zarr(item, self.video_frame_keys, self.frame_group)
+        item = load_from_frame_torch(item, self.video_frame_keys, self.frame_path)
 
         if self.image_transforms is not None:
             for cam in self.camera_keys:

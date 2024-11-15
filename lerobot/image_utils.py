@@ -1,5 +1,6 @@
 import warnings
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, ClassVar, List, Union
 
 import pyarrow as pa
@@ -23,6 +24,19 @@ def load_from_frame_zarr(item: dict, frame_keys: List[str], frame_group: zarr.Gr
         item[frame_key] = frame_tensor  # T C H W
     return item
 
+
+def load_from_frame_torch(item: dict, frame_keys: List[str], frame_path: Path):
+    for frame_key in frame_keys:
+        frame_dicts = item[frame_key] if isinstance(item[frame_key], list) else [item[frame_key]]
+        episode_indices = [frame_dict['episode_index'] for frame_dict in frame_dicts]
+        assert len(set(episode_indices)) == 1
+
+        episode_index = episode_indices[0]
+        frame_indices = [frame_dict['frame_index'] for frame_dict in frame_dicts]
+
+        frames = torch.load(frame_path / f'episode_{episode_index}.pth')
+        item[frame_key] = frames[frame_indices]  # T V C H W
+    return item
 
 @dataclass
 class VideoFrameValue:
