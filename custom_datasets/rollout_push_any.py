@@ -66,7 +66,7 @@ class RolloutPushAnyMemDataset(TrajectoryDataset):
 
         self.root_group = zarr.open(data_directory, mode='r')
 
-        self._dataset = to_memory_dataset(self.root_group)
+        self._dataset = to_memory_dataset(self.root_path)
         self.episode_data_index = calculate_episode_data_index(self._dataset)
         self._hf_num_episodes = len(self._dataset['episode_index'].unique())
 

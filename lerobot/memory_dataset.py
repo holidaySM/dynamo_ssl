@@ -1,11 +1,9 @@
+from pathlib import Path
 from typing import Union
 
-import zarr
+import numpy as np
 import torch
 from torch.utils.data import Dataset
-import numpy as np
-
-from lerobot.rollout_datasets.zarr_utils import read_zarr_data_to_data_dict
 
 
 def _convert_to_tensor(value: Union[np.ndarray, dict]):
@@ -42,9 +40,9 @@ class MemoryDataset(Dataset):
         self._transform = transform
 
 
-def to_memory_dataset(root_group: zarr.Group):
-    data_group = root_group['data']
-    data_dict = read_zarr_data_to_data_dict(data_group)
+def to_memory_dataset(root_path: Path):
+    data_path = root_path / 'episodes.pth'
+    data_dict = torch.load(data_path, map_location=torch.device('cpu'))
     dataset = MemoryDataset.from_dict(data_dict)
     dataset.set_transform(_convert_to_tensor)
     return dataset
