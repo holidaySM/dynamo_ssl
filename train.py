@@ -1,3 +1,4 @@
+import logging
 import os
 import tqdm
 import utils
@@ -149,6 +150,8 @@ class Trainer:
     def _setup_loaders(self, batch_size=None, pin_memory=True, num_workers=None):
         if num_workers is None:
             num_workers = self.cfg.num_workers
+
+        logging.info(f"Using {num_workers} workers for data loading.")
         kwargs = {
             "batch_size": batch_size or self.cfg.batch_size,
             "num_workers": num_workers,
@@ -221,9 +224,9 @@ class Trainer:
                 self.log_append("env_offline_eval", 1, offline_eval_results)
 
         with utils.inference.eval_mode(
-            self.encoder,
-            self.projector,
-            no_grad=True,
+                self.encoder,
+                self.projector,
+                no_grad=True,
         ):
             # eval on test set
             self.eval_loss = 0
@@ -376,7 +379,8 @@ class Trainer:
         if self.epoch < self.cfg.warmup_epochs:
             lr = self.cfg.ssl_lr * self.epoch / self.cfg.warmup_epochs
         else:
-            lr = self.cfg.ssl_lr * 0.5 * (1.0 + np.cos(np.pi * (self.epoch - self.cfg.warmup_epochs) / (self.cfg.num_epochs - self.cfg.warmup_epochs)))
+            lr = self.cfg.ssl_lr * 0.5 * (1.0 + np.cos(
+                np.pi * (self.epoch - self.cfg.warmup_epochs) / (self.cfg.num_epochs - self.cfg.warmup_epochs)))
         # fmt: on
         optimizers = [self.encoder_optim, self.projector_optim]
         for optim in optimizers:
