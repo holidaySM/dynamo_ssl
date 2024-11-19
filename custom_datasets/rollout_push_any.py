@@ -62,7 +62,7 @@ class RolloutPushAnyMemDataset(TrajectoryDataset):
         super().__init__()
 
         self.root_path = Path(data_directory)
-        self.frame_path = self.root_path / "frames"
+        self.frame_path = self.root_path / "episode_frames"
 
         self.root_group = zarr.open(data_directory, mode='r')
 
@@ -86,7 +86,7 @@ class RolloutPushAnyMemDataset(TrajectoryDataset):
 
         items = load_from_frame_torch(items, ['observation.image'], self.frame_path)
 
-        obs = items['observation.image'].unsqueeze(1)
+        obs = items['observation.image']
         act = items['action']
         mask = torch.ones(len(act)).bool()
         return obs, act, mask

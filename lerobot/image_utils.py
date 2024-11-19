@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, ClassVar, List, Union
 
+import einops
 import pyarrow as pa
 import torch
 import zarr
@@ -36,7 +37,8 @@ def load_from_frame_torch(item: dict, frame_keys: List[str], frame_path: Path):
         frame_indices = [frame_dict['frame_index'] for frame_dict in frame_dicts]
 
         frames = torch.load(frame_path / f'episode_{episode_index}.pth')
-        item[frame_key] = frames[frame_indices]  # T V C H W
+        frames = einops.rearrange(frames[frame_indices], "T C H W -> T 1 C H W") / 255.0
+        item[frame_key] = frames  # T V C H W
     return item
 
 @dataclass
