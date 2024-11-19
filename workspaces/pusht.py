@@ -13,8 +13,8 @@ from accelerate import Accelerator
 accelerator = Accelerator()
 OBS_ELEMENT_INDICES = {
     "agent_pos": np.arange(0, 2),
-    "block_pos": np.arange(2, 4),
-    "block_rot": np.arange(4, 5),
+    # "block_pos": np.arange(2, 4),
+    # "block_rot": np.arange(4, 5),
 }
 
 
@@ -60,9 +60,8 @@ class PushTWorkspace(base.Workspace):
             states = []
             actions = []
             for i in range(len(self.dataset)):
-                T = self.dataset.get_seq_length(i)
-                states.append(self.dataset.states[i, :T])
-                actions.append(self.dataset.actions[i, :T])
+                states.append(self.dataset.get_states(i))
+                actions.append(self.dataset.get_actions(i))
             embd_state_linear_probe_results = (
                 utils.inference.linear_probe_with_trajectory_split(
                     embeddings,
@@ -97,7 +96,7 @@ class PushTWorkspace(base.Workspace):
                     range(10, self.dataset.get_seq_length(query_traj_idx))
                 )
                 query_embedding = embeddings[query_traj_idx][query_frame_idx]
-                query_frame_state = self.dataset.states[query_traj_idx, query_frame_idx]
+                query_frame_state = self.dataset.get_states(query_traj_idx, query_frame_idx)
 
                 pool_embeddings = torch.cat(
                     [x for i, x in enumerate(embeddings) if i != query_traj_idx]

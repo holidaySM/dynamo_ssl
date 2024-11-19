@@ -52,10 +52,14 @@ class RolloutPushAnyMemDataset(TrajectoryDataset):
         to_idx = self.episode_data_index["to"][episode_idx].item()
         return from_idx, to_idx
 
-    @property
-    def states(self):
-        return None
+    def get_states(self, episode_idx, frame_idx=None):
+        return self._select_values('observation.state', episode_idx, frame_idx)
 
-    @property
-    def actions(self):
-        return None
+    def get_actions(self, episode_idx, frame_idx=None):
+        return self._select_values('action', episode_idx, frame_idx)
+
+    def _select_values(self, key, episode_idx, frame_idx=None):
+        from_idx, to_idx = self._get_episode_from_to(episode_idx)
+        if frame_idx is None:
+            return self._dataset[key][from_idx:to_idx]
+        return self._dataset[key][from_idx + frame_idx]

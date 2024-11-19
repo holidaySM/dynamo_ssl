@@ -56,6 +56,18 @@ class PushTDataset(TrajectoryDataset):
         mask = torch.ones(len(act)).bool()
         return obs, act, mask
 
+    def get_states(self, idx, frame_idx=None):
+        if frame_idx is None:
+            T = self.get_seq_length(idx)
+            return self.states[idx, :T]
+        return self.states[idx, frame_idx]
+
+    def get_actions(self, idx, frame_idx=None):
+        if frame_idx is None:
+            T = self.get_seq_length(idx)
+            return self.actions[idx, :T]
+        return self.actions[idx, frame_idx]
+
     def __getitem__(self, idx):
         return self.get_frames(idx, range(self.get_seq_length(idx)))
 
