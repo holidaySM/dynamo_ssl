@@ -1,7 +1,4 @@
-from typing import Dict
-
 import numpy as np
-import torch
 import zarr
 from datasets import Sequence, Value, Dataset, Features
 
