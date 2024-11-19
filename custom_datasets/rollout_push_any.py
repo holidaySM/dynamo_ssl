@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Optional
 
 import torch
-import zarr
 
 from custom_datasets.core import TrajectoryDataset
 from lerobot.image_utils import load_from_frame_torch
@@ -16,8 +15,6 @@ class RolloutPushAnyMemDataset(TrajectoryDataset):
 
         self.root_path = Path(data_directory)
         self.frame_path = self.root_path / "episode_frames"
-
-        self.root_group = zarr.open(data_directory, mode='r')
 
         self._dataset = to_memory_dataset(self.root_path)
         self.episode_data_index = calculate_episode_data_index(self._dataset)
@@ -54,3 +51,11 @@ class RolloutPushAnyMemDataset(TrajectoryDataset):
         from_idx = self.episode_data_index["from"][episode_idx].item()
         to_idx = self.episode_data_index["to"][episode_idx].item()
         return from_idx, to_idx
+
+    @property
+    def states(self):
+        return None
+
+    @property
+    def actions(self):
+        return None
