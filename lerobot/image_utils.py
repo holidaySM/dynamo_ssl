@@ -2,11 +2,13 @@ import collections.abc
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ClassVar, List
+from typing import Any, ClassVar, List, Dict
 
 import einops
+import numpy as np
 import pyarrow as pa
 import torch
+from datasets import Dataset
 from datasets.features.features import register_feature
 
 
@@ -23,6 +25,13 @@ def load_from_frame_torch(item: dict, frame_keys: List[str], frame_path: Path):
         frames = einops.rearrange(frames[frame_indices], "T C H W -> T 1 C H W") / 255.0
         item[frame_key] = frames  # T V C H W
     return item
+
+
+def to_hf_dataset(root_path: Path):
+    data_path = root_path / 'episodes.pth'
+    data_dict = torch.load(data_path, map_location=torch.device('cpu'))
+    dataset = Dataset.from_dict(data_dict)
+    return dataset
 
 
 @dataclass
