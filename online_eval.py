@@ -28,6 +28,20 @@ def seed_everything(random_seed: int):
     random.seed(random_seed)
 
 
+def load_dinov2_model(model_name: str = 'dinov2_vitg14'):
+    """
+    Loads a DINOv2 model specified by the model_name parameter.
+
+    Parameters:
+        model_name (str): The name of the DINOv2 model to load.
+
+    Returns:
+        torch.nn.Module: The loaded DINOv2 model.
+    """
+    model = torch.hub.load('facebookresearch/dinov2', model_name)
+    return model
+
+
 @hydra.main(config_path="eval_configs", version_base="1.2")
 def main(cfg):
     print(OmegaConf.to_yaml(cfg))

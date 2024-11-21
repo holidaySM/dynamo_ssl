@@ -1,0 +1,16 @@
+_target_: models.encoder.multiview_stack.MultiviewStack
+
+encoders:
+  - _target_: online_eval.load_dinov2_model
+    model_name: dinov2_vitg14_reg
+
+normalizations:
+  - - [0, 0, 0]
+    - [1, 1, 1]
+
+output_dim: 1536
+
+# 384 for ViT-S.
+# 768 for ViT-B.
+# 1024 for ViT-L.
+# 1536 for ViT-g.

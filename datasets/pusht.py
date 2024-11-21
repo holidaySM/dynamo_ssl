@@ -4,6 +4,8 @@ import pickle
 from pathlib import Path
 from typing import Optional
 from datasets.core import TrajectoryDataset
+from torchvision import transforms
+
 
 
 class PushTDataset(TrajectoryDataset):
@@ -12,6 +14,7 @@ class PushTDataset(TrajectoryDataset):
         data_directory,
         subset_fraction: Optional[float] = None,
         relative=False,
+        normalize_for_dinov2=False
     ):
         self.data_directory = Path(data_directory)
         self.relative = relative
@@ -32,6 +35,8 @@ class PushTDataset(TrajectoryDataset):
         self.states = self.states[:n]
         self.actions = self.actions[:n]
         self.seq_lengths = self.seq_lengths[:n]
+        self.normalize_for_dinov2 = normalize_for_dinov2
+        self.transform = self.make_transform() if self.normalize_for_dinov2 else None
 
         for i in range(n):
             T = self.seq_lengths[i]
@@ -52,6 +57,8 @@ class PushTDataset(TrajectoryDataset):
         obs = torch.load(str(vid_dir / f"episode_{idx:03d}.pth"))
         obs = obs[frames]  # THWC
         obs = einops.rearrange(obs, "T H W C -> T 1 C H W") / 255.0  # T V C H W, 1 view
+        if self.transform:
+            obs = self.transform(obs)
         act = self.actions[idx, frames]
         mask = torch.ones(len(act)).bool()
         return obs, act, mask
@@ -61,3 +68,13 @@ class PushTDataset(TrajectoryDataset):
 
     def __len__(self):
         return len(self.seq_lengths)
+    
+    def make_transform(self) -> transforms.Compose:
+        return transforms.Compose([
+            lambda x: 255.0 * x,
+            transforms.Normalize(
+                mean=(123.675, 116.28, 103.53),
+                std=(58.395, 57.12, 57.375),
+            ),
+        ])
+
