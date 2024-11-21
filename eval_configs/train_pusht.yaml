@@ -12,7 +12,7 @@ batch_size: 512
 epochs: 5000
 eval_freq: 10
 eval_on_env_freq: 100
-num_env_evals: 100
+num_env_evals: 50
 num_final_evals: 100
 num_final_eval_per_goal: 1
 action_window_size: 5

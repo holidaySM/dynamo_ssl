@@ -2,7 +2,7 @@ _target_: models.encoder.multiview_stack.MultiviewStack
 
 encoders:
   - _target_: torch.load
-    f: /home/sm/PycharmProjects/dynamo_ssl/exp_local/2024.11.12/141256_train_pusht_dynamo/encoder.pt  # set the path to the encoder snapshot here
+    f: /home/sm/PycharmProjects/dynamo_ssl/exp_local/for_examination/013554_train_pusht_rollout_dynamo/encoder_59.pt  # set the path to the encoder snapshot here
 normalizations:
   - - [0, 0, 0]
     - [1, 1, 1]
