@@ -5,7 +5,7 @@ workspace:
   _target_: workspaces.pusht.PushTWorkspace
 
 dataset:
-  _target_: custom_datasets.rollout_push_any.RolloutPushAnyMemDataset
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
   data_directory: ${env_vars.datasets.pusht_rollout}
   subset_fraction: ${subset_fraction}
   relative: ${relative}

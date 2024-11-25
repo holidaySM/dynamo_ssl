@@ -2,13 +2,11 @@ import collections.abc
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ClassVar, List, Dict
+from typing import Any, ClassVar, List
 
 import einops
-import numpy as np
 import pyarrow as pa
 import torch
-from datasets import Dataset
 from datasets.features.features import register_feature
 
 
@@ -27,15 +25,8 @@ def load_from_frame_torch(item: dict, frame_keys: List[str], frame_path: Path):
     return item
 
 
-def to_hf_dataset(root_path: Path):
-    data_path = root_path / 'episodes.pth'
-    data_dict = torch.load(data_path, map_location=torch.device('cpu'))
-    dataset = Dataset.from_dict(data_dict)
-    return dataset
-
-
 @dataclass
-class VideoFrameValue:
+class FrameValue:
     """
     Provides a type for a dataset containing video frames.
 
@@ -66,4 +57,4 @@ with warnings.catch_warnings():
         category=UserWarning,
     )
     # to make VideoFrame available in HuggingFace `datasets`
-    register_feature(VideoFrameValue, "VideoFrameValue")
+    register_feature(FrameValue, "FrameValue")
