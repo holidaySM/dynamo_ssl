@@ -1,13 +1,9 @@
 import collections.abc
-import warnings
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ClassVar, List
+from typing import List
 
 import einops
-import pyarrow as pa
 import torch
-from datasets.features.features import register_feature
 
 
 def load_from_frame_torch(item: dict, frame_keys: List[str], frame_path: Path):
@@ -23,38 +19,3 @@ def load_from_frame_torch(item: dict, frame_keys: List[str], frame_path: Path):
         frames = einops.rearrange(frames[frame_indices], "T C H W -> T 1 C H W") / 255.0
         item[frame_key] = frames  # T V C H W
     return item
-
-
-@dataclass
-class FrameValue:
-    """
-    Provides a type for a dataset containing video frames.
-
-    Example:
-
-    ```python
-    data_dict = [{"image": {"episode_index": 5, "timestamp": 0.3, "frame_index": 0}}]
-    features = {"image": FrameValue()}
-    Dataset.from_dict(data_dict, features=Features(features))
-    ```
-    """
-
-    pa_type: ClassVar[Any] = pa.struct({
-        "episode_index": pa.int64(),
-        "timestamp": pa.float32(),
-        "frame_index": pa.int64()
-    })
-    _type: str = field(default="VideoFrameValue", init=False, repr=False)
-
-    def __call__(self):
-        return self.pa_type
-
-
-with warnings.catch_warnings():
-    warnings.filterwarnings(
-        "ignore",
-        "'register_feature' is experimental and might be subject to breaking changes in the future.",
-        category=UserWarning,
-    )
-    # to make VideoFrame available in HuggingFace `datasets`
-    register_feature(FrameValue, "FrameValue")
