@@ -138,3 +138,36 @@ See below for detailed steps for each environment.
     - This template computes linear probe and nearest neighbor MSE from the image embeddings to states/actions, for monitoring training convergence.
     - It assumes that your dataset class has `states` (`batch` x `time` x `state_dim`) and `actions` (`batch` x `time` x `action_dim`) attributes.
       - For a real-world dataset, you can use proprioception as the state.
+
+## Data Format
+A roll-out dataset should be stored as the below format:
+```
+{env_name}/
+  episode_frames/
+    episode_{episode_idx}.pth
+  episodes/
+    episode_{episode_idx}.pth
+```
+
+`episode_frames/episode_{episode_idx}.pth` is a `T x C x H x W` uint8 tensor.
+`episodes/episode_{episode_idx}.pth` is a dictionary that has following keys:
+
+| key name          | class      | shape  | dtype   |
+|-------------------|------------|--------|---------|
+| action            | np.ndarray | (T, A) | float32 |
+| episode_index     | np.ndarray | (T,)   | int64   |
+| frame_index       | np.ndarray | (T,)   | int64   |
+| next.done         | np.ndarray | (T,)   | bool    |
+| next.reward       | np.ndarray | (T,)   | float64 |
+| next.success      | np.ndarray | (T,)   | bool    |
+| observation.state | np.ndarray | (T, S) | float32 |
+| timestamp         | np.ndarray | (T,)   | float32 |
+| observation.image | np.ndarray | (T,)   | object  |
+
+`observation.image` object has the following format:
+
+| key name          | class      | dtype   |
+|-------------------|------------|---------|
+| episode_index     | np.ndarray | int64   |
+| frame_index       | np.ndarray | int64   |
+| timestamp         | np.ndarray | float32 |
