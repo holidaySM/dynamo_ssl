@@ -40,17 +40,21 @@ class resnet18(nn.Module):
         return out
 
 
-class resnext101_64x4d(nn.Module):
+class resnet50(nn.Module):
     def __init__(
             self,
             pretrained: bool = True,
-            output_dim: int = 2048,  # fixed for resnet18; included for consistency with config
+            output_dim: int = 512,  # fixed for resnet18; included for consistency with config
             unit_norm: bool = False,
     ):
         super().__init__()
-        resnet = torchvision.models.resnext101_64x4d(pretrained=pretrained)
+        resnet = torchvision.models.resnet50(pretrained=pretrained)
         self.resnet = nn.Sequential(*list(resnet.children())[:-1])
         self.flatten = nn.Flatten()
+        self.squeeze_layer = nn.Sequential(
+            nn.ReLU(),
+            nn.Linear(2048, output_dim)
+        )
         self.pretrained = pretrained
         self.normalize = torchvision.transforms.Normalize(
             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
@@ -68,6 +72,7 @@ class resnext101_64x4d(nn.Module):
         x = self.normalize(x)
         out = self.resnet(x)
         out = self.flatten(out)
+        out = self.squeeze_layer(out)
         if self.unit_norm:
             out = torch.nn.functional.normalize(out, p=2, dim=-1)
         if dims == 3:
