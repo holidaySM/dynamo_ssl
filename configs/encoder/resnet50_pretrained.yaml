@@ -1,4 +1,4 @@
-_target_: models.encoder.resnet.resnext101_64x4d
+_target_: models.encoder.resnet.resnet50
 pretrained: True
-output_dim: 2048
+output_dim: 512
 unit_norm: False
