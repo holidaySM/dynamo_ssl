@@ -1,14 +1,17 @@
 _target_: models.encoder.multiview_stack.MultiviewStack
 
 encoders:
-  - _target_: online_eval.load_dinov2_model
-    model_name: dinov2_vits14_reg
+  - _target_: models.encoder.resnet.resnet18
+    pretrained: False
+    output_dim: 512
+    unit_norm: False
+
 
 normalizations:
   - - [0, 0, 0]
     - [1, 1, 1]
 
-output_dim: 384
+output_dim: 512
 
 # 384 for ViT-S.
 # 768 for ViT-B.

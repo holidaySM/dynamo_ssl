@@ -16,6 +16,9 @@ import pickle
 from datasets.core import TrajectoryEmbeddingDataset, split_traj_datasets
 from datasets.vqbet_repro import TrajectorySlicerDataset
 
+import torch.nn.functional as F
+
+
 
 if "MUJOCO_GL" not in os.environ:
     os.environ["MUJOCO_GL"] = "egl"
@@ -40,7 +43,6 @@ def load_dinov2_model(model_name: str = 'dinov2_vitg14'):
     """
     model = torch.hub.load('facebookresearch/dinov2', model_name)
     return model
-
 
 @hydra.main(config_path="eval_configs", version_base="1.2")
 def main(cfg):

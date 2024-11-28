@@ -35,8 +35,7 @@ class PushTDataset(TrajectoryDataset):
         self.states = self.states[:n]
         self.actions = self.actions[:n]
         self.seq_lengths = self.seq_lengths[:n]
-        self.normalize_for_dinov2 = normalize_for_dinov2
-        self.transform = self.make_transform() if self.normalize_for_dinov2 else None
+        self.transform = self.make_transform() if normalize_for_dinov2 else None
 
         for i in range(n):
             T = self.seq_lengths[i]
