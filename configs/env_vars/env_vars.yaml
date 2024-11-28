@@ -5,5 +5,5 @@ datasets:
     sim_kitchen: ${env_vars.dataset_root}/sim_kitchen_dataset
     libero: ${env_vars.dataset_root}/libero_dataset
     block_push: ${env_vars.dataset_root}/block_push_dataset
-    pusht_rollout: /home/sm/Datasets/lerobot/pusht_l200
+    pusht_rollout: /home/sm/Datasets/lerobot/pusht_clean_l200
     your_trajectory_dataset: YOUR_DATASET_PATH
