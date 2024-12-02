@@ -49,6 +49,7 @@ class Trainer:
         self.work_dir = Path(os.getcwd())  # get the absolute path
 
         self.dataset = hydra.utils.instantiate(cfg.env.dataset)
+        logger.info(f"Dataset size before split: {len(self.dataset)}")
         self.train_set, self.test_set = self._split_and_slice_dataset(self.dataset)
         self._setup_loaders(batch_size=self.cfg.batch_size)
         self._init_tracker(cfg)
