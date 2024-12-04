@@ -1,4 +1,4 @@
-_target_: models.ssl.dynamo.DynaMoDinoSSL
+_target_: models.ssl.dynamo_dino_reg.DynaMoDinoSSL
 window_size: ${window_size}
 feature_dim: ${encoder.output_dim}
 projection_dim: ${projector.output_dim}

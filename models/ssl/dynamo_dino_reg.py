@@ -29,7 +29,7 @@ class DINOLoss(nn.Module):
         # ))
         self.teacher_temp = teacher_temp
 
-    def forward(self, student_output, teacher_output, epoch):
+    def forward(self, student_output, teacher_output):
         """
         Cross-entropy between softmax outputs of the teacher and student networks.
         """
@@ -64,10 +64,10 @@ class DINOLoss(nn.Module):
 class DynaMoDinoSSL(DynaMoSSL):
     def __init__(self, teacher_temp, student_temp, center_momentum, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dino_loss = DINOLoss(out_dim=self.feature_dim,
+        self.dino_loss = DINOLoss(out_dim=self.forward_dynamics.config.output_dim,
                                   teacher_temp=teacher_temp,
                                   student_temp=student_temp,
-                                  center_momentum=center_momentum)
+                                  center_momentum=center_momentum).cuda()
 
     def _forward_dyn_loss_one_pair(
             self,
