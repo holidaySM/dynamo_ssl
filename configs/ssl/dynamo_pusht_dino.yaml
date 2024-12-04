@@ -18,3 +18,11 @@ lr: ${ssl_lr}
 weight_decay: ${ssl_weight_decay}
 betas: ${betas}
 separate_single_views: True
+
+# Dino loss
+teacher_temp: 0.04
+student_temp: 0.1
+center_momentum: 0.9
+#warmup_teacher_temp: ${}
+#warmup_teacher_temp_epochs: ${}
+#num_epochs: ${num_epochs}
