@@ -2,7 +2,7 @@ defaults:
   - _self_
   - encoder: resnet18_random
   - projector: inverse_dynamics_pusht
-  - ssl: dynamo_pusht
+  - ssl: dynamo_pusht_dino
   - env: pusht_rollout
   - env_vars: env_vars
 
