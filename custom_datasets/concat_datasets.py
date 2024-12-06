@@ -1,6 +1,8 @@
 from itertools import accumulate
 from typing import List
 
+import hydra
+
 from custom_datasets.core import TrajectoryDataset
 
 
@@ -48,3 +50,8 @@ class ConcatDataset(TrajectoryDataset):
         if dataset_idx == 0:
             return 0
         return self._accumulated_sizes[dataset_idx - 1]
+
+
+def concat_dataset_factory(datasets_config):
+    datasets = [hydra.utils.instantiate(dataset_config) for dataset_config in datasets_config]
+    return ConcatDataset(datasets)

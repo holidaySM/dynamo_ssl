@@ -1,0 +1,10 @@
+views: 1
+action_dim: 2
+
+workspace:
+  _target_: workspaces.pusht.PushTWorkspace
+
+dataset:
+  _target_: custom_datasets.concat_datasets.concat_dataset_factory
+  datasets:
+    -
