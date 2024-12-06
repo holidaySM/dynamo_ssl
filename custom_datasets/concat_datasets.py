@@ -52,6 +52,6 @@ class ConcatDataset(TrajectoryDataset):
         return self._accumulated_sizes[dataset_idx - 1]
 
 
-def concat_dataset_factory(datasets_config):
-    datasets = [hydra.utils.instantiate(dataset_config) for dataset_config in datasets_config]
+def concat_dataset_factory(datasets):
+    datasets = [hydra.utils.instantiate(dataset_config.dataset) for dataset_config in datasets]
     return ConcatDataset(datasets)

@@ -7,4 +7,5 @@ workspace:
 dataset:
   _target_: custom_datasets.concat_datasets.concat_dataset_factory
   datasets:
-    -
+    - ${env.pusht}
+    - ${env.pusht_rollout}
