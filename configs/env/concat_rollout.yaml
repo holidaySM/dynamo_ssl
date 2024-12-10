@@ -4,20 +4,22 @@ action_dim: 2
 workspace:
   _target_: workspaces.pusht.PushTWorkspace
 
-pusht:
-  _target_: custom_datasets.pusht.PushTDataset
-  data_directory: ${env_vars.datasets.pusht}
-  subset_fraction: ${subset_fraction}
-  relative: ${relative}
 
-pusht_rollout:
+lerobot_dp_rollout:
   _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
   data_directory: ${env_vars.datasets.pusht_rollout}
   subset_fraction: ${subset_fraction}
   relative: ${relative}
 
+lerobot_vq_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
+
 dataset:
   _target_: custom_datasets.concat_datasets.ConcatDataset
   datasets:
-    - ${env.pusht}
-    - ${env.pusht_rollout}
+    - ${env.lerobot_dp_rollout}
+    - ${env.lerobot_vq_rollout}
