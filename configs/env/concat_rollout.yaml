@@ -13,7 +13,7 @@ lerobot_dp_rollout:
 
 lerobot_vq_rollout:
   _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
-  data_directory: ${env_vars.datasets.pusht_rollout}
+  data_directory: ${env_vars.datasets.pusht_vq_rollout}
   subset_fraction: ${subset_fraction}
   relative: ${relative}
 
