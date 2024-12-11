@@ -9,4 +9,8 @@ datasets:
   pusht_vq_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_vq_l200
   pusht_ddpm_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_ddpm_l200
   pusht_ddim_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_ddim_l200
+  pusht_dp04_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp04_l200
+  pusht_dp22_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp22_l200
+  pusht_dp44_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp44_l200
+  pusht_dp74_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp74_l200
   your_trajectory_dataset: YOUR_DATASET_PATH

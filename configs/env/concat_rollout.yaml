@@ -29,6 +29,30 @@ lerobot_ddim_rollout:
   subset_fraction: ${subset_fraction}
   relative: ${relative}
 
+lerobot_dp04_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_dp04_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
+lerobot_dp22_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_dp22_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
+lerobot_dp44_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_dp44_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
+lerobot_dp74_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_dp74_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
 
 dataset:
   _target_: custom_datasets.concat_datasets.ConcatDataset
@@ -37,3 +61,7 @@ dataset:
     - ${env.lerobot_vq_rollout}
     - ${env.lerobot_ddpm_rollout}
     - ${env.lerobot_ddim_rollout}
+    - ${env.lerobot_dp04_rollout}
+    - ${env.lerobot_dp22_rollout}
+    - ${env.lerobot_dp44_rollout}
+    - ${env.lerobot_dp74_rollout}
