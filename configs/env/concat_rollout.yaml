@@ -17,9 +17,23 @@ lerobot_vq_rollout:
   subset_fraction: ${subset_fraction}
   relative: ${relative}
 
+lerobot_ddpm_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_ddpm_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
+lerobot_ddim_rollout:
+  _target_: custom_datasets.rollout_push_any.RolloutPushAnyDataset
+  data_directory: ${env_vars.datasets.pusht_ddim_rollout}
+  subset_fraction: ${subset_fraction}
+  relative: ${relative}
+
 
 dataset:
   _target_: custom_datasets.concat_datasets.ConcatDataset
   datasets:
     - ${env.lerobot_dp_rollout}
     - ${env.lerobot_vq_rollout}
+    - ${env.lerobot_ddpm_rollout}
+    - ${env.lerobot_ddim_rollout}

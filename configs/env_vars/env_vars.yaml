@@ -7,4 +7,6 @@ datasets:
   block_push: ${env_vars.dataset_root}/block_push_dataset
   pusht_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_clean_l200
   pusht_vq_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_vq_l200
+  pusht_ddpm_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_ddpm_l200
+  pusht_ddim_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_ddim_l200
   your_trajectory_dataset: YOUR_DATASET_PATH
