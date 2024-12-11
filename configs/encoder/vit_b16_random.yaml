@@ -1,0 +1,2 @@
+_target_: models.encoder.vision_transformer.vit_base
+output_dim: 768

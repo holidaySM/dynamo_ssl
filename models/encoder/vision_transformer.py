@@ -249,11 +249,17 @@ class VisionTransformer(nn.Module):
         return self.pos_drop(x)
 
     def forward(self, x):
+        dims = len(x.shape)
+        orig_shape = x.shape
+
+        x = x.reshape(-1, *orig_shape[-3:]) if 4 < dims else x
         x = self.prepare_tokens(x)
         for blk in self.blocks:
             x = blk(x)
         x = self.norm(x)
-        return x[:, 0]
+        out = x[:, 0]
+        out = out.reshape(*orig_shape[:-3], -1) if 4 < dims else out
+        return out
 
     def get_last_selfattention(self, x):
         x = self.prepare_tokens(x)

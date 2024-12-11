@@ -1,3 +1,0 @@
-_target_: models.encoder.resnet.vit_base
-pretrained: False
-output_dim: 768
