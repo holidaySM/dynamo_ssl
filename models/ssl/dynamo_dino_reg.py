@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from accelerate import Accelerator
 
 from .dynamo import DynaMoSSL
+from ..ema import EMA
 from ..encoder.vision_transformer import trunc_normal_
 
 accelerator = Accelerator()
@@ -101,12 +102,19 @@ class DINOHead(nn.Module):
 
 
 class DynaMoDinoSSL(DynaMoSSL):
-    def __init__(self, teacher_temp, student_temp, center_momentum, *args, **kwargs):
+    def __init__(self, teacher_temp, student_temp, center_momentum, dino_head_out_dim, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dino_loss = DINOLoss(out_dim=self.forward_dynamics.config.output_dim,
+        self.dino_loss = DINOLoss(out_dim=dino_head_out_dim,
                                   teacher_temp=teacher_temp,
                                   student_temp=student_temp,
                                   center_momentum=center_momentum).cuda()
+        self.student_dino_head = DINOHead(in_dim=self.forward_dynamics.config.output_dim,
+                                          out_dim=dino_head_out_dim)
+        self.student_dino_head_optimizer = torch.optim.AdamW(params=self.student_dino_head.parameters(),
+                                                             lr=kwargs['lr'],
+                                                             weight_decay=kwargs['weight_decay'],
+                                                             betas=kwargs['betas'])
+        self.teacher_dino_head = EMA(self.student_dino_head, self.ema_beta)
 
     def _forward_dyn_loss_one_pair(
             self,
@@ -119,5 +127,16 @@ class DynaMoDinoSSL(DynaMoSSL):
         forward_dyn_input = torch.cat([obs_enc[:, :-1, j], obs_proj[:, 1:, i]], dim=-1)
         obs_enc_pred = self.forward_dynamics(forward_dyn_input)  # (N, T-1, E)
 
-        loss = self.dino_loss(obs_enc_pred, obs_target[:, 1:, j].detach())
+        predicted_features = self.student_dino_head(obs_enc_pred)
+        target_features = self.teacher_dino_head(obs_target)
+        loss = self.dino_loss(predicted_features, target_features[:, 1:, j].detach())
         return loss
+
+    def _covariance_reg_loss(self, obs_enc: torch.Tensor):
+        return 0.
+
+    def step(self):
+        super().step()
+        self.student_dino_head_optimizer.step()
+        self.student_dino_head_optimizer.zero_grad(set_to_none=True)
+        self.teacher_dino_head.step(self.student_dino_head)

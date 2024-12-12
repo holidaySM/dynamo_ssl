@@ -26,3 +26,4 @@ center_momentum: 0.9
 #warmup_teacher_temp: ${}
 #warmup_teacher_temp_epochs: ${}
 #num_epochs: ${num_epochs}
+dino_head_out_dim: 4096
