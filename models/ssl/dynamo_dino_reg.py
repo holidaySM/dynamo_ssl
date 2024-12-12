@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from accelerate import Accelerator
 
 from .dynamo import DynaMoSSL
-from ..ema import EMA
+from ..ema import EMA, copy_weights
 from ..encoder.vision_transformer import trunc_normal_
 
 accelerator = Accelerator()
@@ -68,6 +68,10 @@ class DINOHead(nn.Module):
                  bottleneck_dim=256):
         super().__init__()
         nlayers = max(nlayers, 1)
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.nlayers = nlayers
+
         if nlayers == 1:
             self.mlp = nn.Linear(in_dim, bottleneck_dim)
         else:
@@ -100,21 +104,24 @@ class DINOHead(nn.Module):
         x = self.last_layer(x)
         return x
 
+    @classmethod
+    def create_copy_from(cls, src_model):
+        src_device = next(src_model.parameters()).device
+        model = DINOHead(in_dim=src_model.in_dim, out_dim=src_model.out_dim, nlayers=src_model.nlayers)
+        model = copy_weights(src_model, model)
+        model = model.to(src_device)
+        return model
+
 
 class DynaMoDinoSSL(DynaMoSSL):
-    def __init__(self, teacher_temp, student_temp, center_momentum, dino_head_out_dim, *args, **kwargs):
+    def __init__(self, teacher_temp, student_temp, center_momentum, dino_head, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dino_loss = DINOLoss(out_dim=dino_head_out_dim,
+        self.dino_loss = DINOLoss(out_dim=dino_head.out_dim,
                                   teacher_temp=teacher_temp,
                                   student_temp=student_temp,
                                   center_momentum=center_momentum).cuda()
-        self.student_dino_head = DINOHead(in_dim=self.forward_dynamics.config.output_dim,
-                                          out_dim=dino_head_out_dim)
-        self.student_dino_head_optimizer = torch.optim.AdamW(params=self.student_dino_head.parameters(),
-                                                             lr=kwargs['lr'],
-                                                             weight_decay=kwargs['weight_decay'],
-                                                             betas=kwargs['betas'])
-        self.teacher_dino_head = EMA(self.student_dino_head, self.ema_beta)
+        self.__dict__["dino_head"] = dino_head
+        self.teacher_dino_head = EMA(DINOHead.create_copy_from(dino_head), self.ema_beta, copy=False)
 
     def _forward_dyn_loss_one_pair(
             self,
@@ -127,16 +134,11 @@ class DynaMoDinoSSL(DynaMoSSL):
         forward_dyn_input = torch.cat([obs_enc[:, :-1, j], obs_proj[:, 1:, i]], dim=-1)
         obs_enc_pred = self.forward_dynamics(forward_dyn_input)  # (N, T-1, E)
 
-        predicted_features = self.student_dino_head(obs_enc_pred)
+        predicted_features = self.dino_head(obs_enc_pred)
         target_features = self.teacher_dino_head(obs_target)
         loss = self.dino_loss(predicted_features, target_features[:, 1:, j].detach())
         return loss
 
-    def _covariance_reg_loss(self, obs_enc: torch.Tensor):
-        return 0.
-
     def step(self):
         super().step()
-        self.student_dino_head_optimizer.step()
-        self.student_dino_head_optimizer.zero_grad(set_to_none=True)
-        self.teacher_dino_head.step(self.student_dino_head)
+        self.teacher_dino_head.step(self.dino_head)

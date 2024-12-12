@@ -1,0 +1,2 @@
+_target_: models.encoder.vision_transformer.vit_small
+output_dim: 384

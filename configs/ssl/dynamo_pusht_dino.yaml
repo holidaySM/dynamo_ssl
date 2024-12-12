@@ -7,7 +7,7 @@ n_head: 6
 n_embd: 120
 
 dropout: 0.0 # dropout on the forward dynamics model
-covariance_reg_coef: 0.04
+covariance_reg_coef: 0.0
 dynamics_loss_coef: 1.0
 
 ema_beta: 0.996
@@ -26,4 +26,8 @@ center_momentum: 0.9
 #warmup_teacher_temp: ${}
 #warmup_teacher_temp_epochs: ${}
 #num_epochs: ${num_epochs}
-dino_head_out_dim: 4096
+dino_head:
+  _target_: models.ssl.dynamo_dino_reg.DINOHead
+  in_dim: ${encoder.output_dim}
+  out_dim: 4096
+  nlayers: 3
