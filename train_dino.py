@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader
 
 import custom_datasets
 import utils
+from custom_datasets.concat_datasets import ConcatDataset
 from workspaces.base import Workspace
 
 os.environ["WANDB_START_METHOD"] = "thread"
@@ -50,7 +51,7 @@ class Trainer:
         os.chdir(self.work_dir)
         self.work_dir = Path(os.getcwd())  # get the absolute path
 
-        self.dataset = hydra.utils.instantiate(cfg.env.dataset)
+        self.dataset: ConcatDataset = hydra.utils.instantiate(cfg.env.dataset)
         logger.info(f"Dataset size before split: {len(self.dataset)}")
         self.train_set, self.test_set = self._split_and_slice_dataset(self.dataset)
         self._setup_loaders(batch_size=self.cfg.batch_size)
@@ -72,7 +73,7 @@ class Trainer:
             work_dir=self.work_dir,
             _recursive_=False,
         )
-        self.workspace.set_dataset(self.dataset)
+        self.workspace.set_dataset(self.dataset.datasets[0])
 
         self.log_components = OrderedDict()
         self.epoch = 0
