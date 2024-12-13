@@ -405,7 +405,7 @@ class Trainer:
         """Decays the learning rate with half-cycle cosine after warmup"""
         # fmt: off
         if self.epoch < self.cfg.warmup_epochs:
-            lr = self.cfg.ssl_lr * self.epoch / self.cfg.warmup_epochs
+            lr = self.cfg.ssl_lr * (self.epoch + 1) / self.cfg.warmup_epochs
         else:
             lr = self.cfg.ssl_lr * 0.5 * (1.0 + np.cos(
                 np.pi * (self.epoch - self.cfg.warmup_epochs) / (self.cfg.num_epochs - self.cfg.warmup_epochs)))
