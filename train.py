@@ -13,6 +13,8 @@ from datetime import timedelta
 from omegaconf import OmegaConf
 from accelerate import Accelerator
 from collections import OrderedDict
+
+from custom_datasets.concat_datasets import ConcatDataset
 from workspaces.base import Workspace
 from torch.utils.data import DataLoader
 from accelerate.logging import get_logger
@@ -68,7 +70,11 @@ class Trainer:
             work_dir=self.work_dir,
             _recursive_=False,
         )
-        self.workspace.set_dataset(self.dataset)
+
+        if isinstance(self.dataset, ConcatDataset):
+            self.workspace.set_dataset(self.dataset.datasets[0])
+        else:
+            self.workspace.set_dataset(self.dataset)
 
         self.log_components = OrderedDict()
         self.epoch = 0
