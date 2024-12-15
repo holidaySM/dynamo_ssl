@@ -2,7 +2,7 @@ defaults:
   - _self_
   - encoder: resnet18_random
   - projector: inverse_dynamics_pusht
-  - ssl: dynamo_pusht_dino
+  - ssl: dynamo_pusht_headless_dino
   - env: concat_rollout
   - env_vars: env_vars
 
@@ -40,7 +40,7 @@ eval_offline: True
 
 # Wandb config
 project: dynamo-repro
-experiment: train_pusht_rollout_dynamo
+experiment: train_pusht_rollout_dynamo_headless
 
 # hydra config
 hydra:

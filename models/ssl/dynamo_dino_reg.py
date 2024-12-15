@@ -142,3 +142,26 @@ class DynaMoDinoSSL(DynaMoSSL):
     def step(self):
         super().step()
         self.teacher_dino_head.step(self.dino_head)
+
+
+class DynaMoHeadlessDinoSSL(DynaMoSSL):
+    def __init__(self, teacher_temp, student_temp, center_momentum, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dino_loss = DINOLoss(out_dim=self.forward_dynamics.config.output_dim,
+                                  teacher_temp=teacher_temp,
+                                  student_temp=student_temp,
+                                  center_momentum=center_momentum).cuda()
+
+    def _forward_dyn_loss_one_pair(
+            self,
+            obs_enc: torch.Tensor,
+            obs_proj: torch.Tensor,
+            obs_target: torch.Tensor,
+            i: int,
+            j: int,
+    ):
+        forward_dyn_input = torch.cat([obs_enc[:, :-1, j], obs_proj[:, 1:, i]], dim=-1)
+        obs_enc_pred = self.forward_dynamics(forward_dyn_input)  # (N, T-1, E)
+
+        loss = self.dino_loss(obs_enc_pred, obs_target[:, 1:, j].detach())
+        return loss

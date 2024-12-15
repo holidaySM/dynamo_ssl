@@ -1,0 +1,28 @@
+_target_: models.ssl.dynamo_dino_reg.DynaMoDinoSSL
+window_size: ${window_size}
+feature_dim: ${encoder.output_dim}
+projection_dim: ${projector.output_dim}
+n_layer: 6
+n_head: 6
+n_embd: 120
+
+dropout: 0.0 # dropout on the forward dynamics model
+covariance_reg_coef: 0.0
+dynamics_loss_coef: 1.0
+
+ema_beta: 0.996
+beta_scheduling: True
+projector_use_ema: True
+
+lr: ${ssl_lr}
+weight_decay: ${ssl_weight_decay}
+betas: ${betas}
+separate_single_views: True
+
+# Dino loss
+teacher_temp: 0.04
+student_temp: 0.1
+center_momentum: 0.9
+#warmup_teacher_temp: ${}
+#warmup_teacher_temp_epochs: ${}
+#num_epochs: ${num_epochs}
