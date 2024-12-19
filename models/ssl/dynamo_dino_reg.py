@@ -147,7 +147,7 @@ class DynaMoDinoSSL(DynaMoSSL):
 class DynaMoHeadlessDinoSSL(DynaMoSSL):
     def __init__(self, teacher_temp, student_temp, center_momentum, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dino_loss = DINOLoss(out_dim=self.forward_dynamics.config.output_dim,
+        self.dino_loss = DINOLoss(out_dim=kwargs['feature_dim'],
                                   teacher_temp=teacher_temp,
                                   student_temp=student_temp,
                                   center_momentum=center_momentum).cuda()

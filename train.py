@@ -35,6 +35,7 @@ class Trainer:
         self.accelerator = Accelerator(
             log_with="wandb", kwargs_handlers=[process_group_kwargs, dist_kwargs]
         )
+        logger.info(f"Accelerator {self.accelerator.state.distributed_type}, {self.accelerator.device}")
         logger.info(f"Mixed precision: {self.accelerator.mixed_precision}")
         utils.set_seed_everywhere(cfg.seed)
 

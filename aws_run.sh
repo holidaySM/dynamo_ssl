@@ -1,0 +1,1 @@
+accelerate launch train.py --config-name=train_pusht_rollout_headless_dino encoder=vit_b16_random
