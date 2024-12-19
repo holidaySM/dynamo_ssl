@@ -1,16 +1,18 @@
 dataset_root: /home/sm/Datasets/dynamo/datasets/dynamo_repro_datasets  # e.g. set this to the unzipped directory of all datasets
+pusht_root: /home/sm/Datasets/lerobot/pusht_rollouts
+
 
 datasets:
   pusht: ${env_vars.dataset_root}/pusht_dataset
   sim_kitchen: ${env_vars.dataset_root}/sim_kitchen_dataset
   libero: ${env_vars.dataset_root}/libero_dataset
   block_push: ${env_vars.dataset_root}/block_push_dataset
-  pusht_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_clean_l200
-  pusht_vq_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_vq_l200
-  pusht_ddpm_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_ddpm_l200
-  pusht_ddim_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_ddim_l200
-  pusht_dp04_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp04_l200
-  pusht_dp22_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp22_l200
-  pusht_dp44_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp44_l200
-  pusht_dp74_rollout: /home/sm/Datasets/lerobot/pusht_rollouts/pusht_dp74_l200
+  pusht_rollout: ${env_vars.pusht_root}/pusht_clean_l200
+  pusht_vq_rollout: ${env_vars.pusht_root}/pusht_vq_l200
+  pusht_ddpm_rollout: ${env_vars.pusht_root}/pusht_ddpm_l200
+  pusht_ddim_rollout: ${env_vars.pusht_root}/pusht_ddim_l200
+  pusht_dp04_rollout: ${env_vars.pusht_root}/pusht_dp04_l200
+  pusht_dp22_rollout: ${env_vars.pusht_root}/pusht_dp22_l200
+  pusht_dp44_rollout: ${env_vars.pusht_root}/pusht_dp44_l200
+  pusht_dp74_rollout: ${env_vars.pusht_root}/pusht_dp74_l200
   your_trajectory_dataset: YOUR_DATASET_PATH
