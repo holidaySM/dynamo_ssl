@@ -1,1 +1,1 @@
-accelerate launch --mixed_precision bf16 train.py --config-name=train_pusht_rollout_headless_dino encoder=vit_b16_random batch_size=8 num_workers=8 ssl_lr=0.0001 subset_fraction=0.1
+accelerate launch --mixed_precision bf16 train.py --config-name=train_pusht_rollout_headless_dino encoder=vit_b16_random batch_size=16 num_workers=8 ssl_lr=0.0001 subset_fraction=0.1
