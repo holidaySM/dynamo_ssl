@@ -52,7 +52,7 @@ def embed_trajectory_dataset(
             for i in range(len(dataset)):
                 obs, *rest = dataset[i]
                 obs = obs.to(accelerator.device)
-                obs_enc = model(obs).to(device)
+                obs_enc = model(obs).cpu()
                 if obs_only:
                     result.append(obs_enc)
                 else:
